@@ -54,7 +54,7 @@ class CanvasController: UIViewController {
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
             sender.view?.removeFromSuperview()
-            self.elementContainer.remove(element: self.mapping[sender.view as! UIImageView]!)
+            self.elementContainer.remove(element: self.mapping[sender.view!]!)
             self.mapping.removeValue(forKey: sender.view as! UIImageView)
         }))
         
