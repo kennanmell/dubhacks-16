@@ -8,22 +8,36 @@
 
 import UIKit
 
+var canvasController: CanvasController?
+
 class CanvasController: UIViewController {
     
     var elementContainer: ElementContainer!
-    var elementModel: UXElement!
+    var newItemController: NewItemController!
+    var mapping = Dictionary<UIImageView, UXElement>()
 
     var canvasView: CanvasView {
         return self.view as! CanvasView
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        canvasController = self
+        newItemController = NewItemController(coder: aDecoder)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        elementModel = UXElement(name: "em", className: "UIView", view: canvasView.dragView)
+        self.navigationController?.navigationBar.isHidden = true
         elementContainer = ElementContainer(className: "MyView")
-        elementContainer.add(element: elementModel)
-        canvasView.dragView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(CanvasController.panDragView)))
-        canvasView.shareButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(CanvasController.shareTapped)))
+        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(CanvasController.doubleTapped))
+        doubleTapRecognizer.numberOfTapsRequired = 2
+        self.view.addGestureRecognizer(doubleTapRecognizer)
+    }
+    
+    func addPan(view: UIView) {
+        view.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(CanvasController.panDragView)))
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(CanvasController.deleteTapped)))
     }
     
     func panDragView(sender: UIPanGestureRecognizer) {
@@ -34,22 +48,35 @@ class CanvasController: UIViewController {
         sender.setTranslation(CGPoint.zero, in: self.view)
     }
     
-    func shareTapped() {
-        // Set up and open Apple's default sharing feature.
+    func deleteTapped(sender: UITapGestureRecognizer) {
+        let alertController = UIAlertController(title: "Delete Element?", message:
+            "This action cannot be undone.", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
+            sender.view?.removeFromSuperview()
+            self.elementContainer.remove(element: self.mapping[sender.view as! UIImageView]!)
+            self.mapping.removeValue(forKey: sender.view as! UIImageView)
+        }))
         
-        let objectsToShare: Array<NSObject> = [elementContainer.generateSwiftCode() as NSObject]
-        
-        let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-        
-        let popoverView = UIView()
-        if activityVC.responds(to: #selector(getter: UIViewController.popoverPresentationController)) {
-            // TODO: iPad
-        }
-        
-        self.present(activityVC, animated: true, completion: {
-            popoverView.removeFromSuperview()
-        })
+        navigationController!.present(alertController, animated: true, completion: nil)
     }
-
+        
+    func doubleTapped() {
+        self.navigationController?.pushViewController(newItemController, animated: true)
+    }
+    
+    // MARK: UINavigationControllerDelegate
+    /*
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        if viewController.isKind(of: NewItemController.self) {
+            let newElement = UXElement(name: currentName, className: currentClass, view: currentView!)
+            elementContainer.add(element: newElement)
+            self.view.addSubview(currentView!)
+            currentView!.frame = CGRect(x: 100, y: 100, width: 100, height: 100)
+            currentView!.backgroundColor = UIColor(red: 100.0 / 255.0, green: 100.0 / 255.0, blue: 100.0 / 255.0, alpha: 1.0)
+            currentView!.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(CanvasController.panDragView)))
+        }
+    }
+*/
 }
 

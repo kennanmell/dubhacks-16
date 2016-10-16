@@ -25,6 +25,10 @@ class ElementContainer {
         elements[element.name] = element
     }
     
+    func remove(element: UXElement) {
+        elements.removeValue(forKey: element.name)
+    }
+    
     func generateSwiftCode() -> String {
         let result = NSMutableString()
         result.append("import UIKit\n\n")

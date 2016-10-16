@@ -9,20 +9,21 @@
 import UIKit
 
 class CanvasView: UIView {
-    let dragView = UIView()
-    let shareButton = UIButton()
+    let defaultLabel = UILabel()
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        addSubview(dragView)
-        dragView.backgroundColor = UIColor(red: 100.0 / 255.0, green: 100.0 / 255.0, blue: 100.0 / 255.0, alpha: 1.0)
-        addSubview(shareButton)
-        shareButton.setImage(UIImage(named: "ShareButton"), for: .normal)
+        
+        defaultLabel.textColor = UIColor(white: 0.65, alpha: 1.0)
+        defaultLabel.text = "Double-tap to add a new UX element!"
+        defaultLabel.font = UIFont(name: defaultLabel.font.fontName, size: 20)
+        defaultLabel.numberOfLines = 0
+        defaultLabel.textAlignment = .center
+        addSubview(defaultLabel)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        dragView.frame = CGRect(x: 10, y: 10, width: 100, height: 100)
-        shareButton.frame = CGRect(x: 20, y: 20, width: 20, height: 20)
+        defaultLabel.frame = CGRect(x: 10, y: self.frame.height * 0.4, width: self.frame.width - 20, height: self.frame.height * 0.2)
     }
 }
