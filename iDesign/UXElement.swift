@@ -13,12 +13,15 @@ class UXElement {
     let className: String
     let canvasView: UIView
     var initializers = Dictionary<String, String>()
-    var layouts = Dictionary<String, String>()
     
     init(name: String, className: String, view: UIView) {
         self.name = name
         self.className = className
         self.canvasView = view
+    }
+    
+    func addInitializer(value: String) {
+        initializers[value] = value
     }
     
     func generateSwiftCodeField() -> String {
@@ -38,6 +41,12 @@ class UXElement {
         result.append("\t\taddSubview(")
         result.append(name)
         result.append(")\n")
+        
+        for initializer in initializers {
+            result.append("\t\t")
+            result.append(initializer.value)
+            result.append("\n")
+        }
         
         return result as String
     }

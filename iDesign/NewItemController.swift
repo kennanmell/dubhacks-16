@@ -28,7 +28,29 @@ class NewItemController: UIViewController, UITextFieldDelegate, UIImagePickerCon
         newItemView.heightField.delegate = self
         newItemView.nameTextField.delegate = self
         newItemView.classTextField.delegate = self
+        newItemView.advancedNewView.cornerRadius.delegate = self
+        newItemView.advancedNewView.textRed.delegate = self
+        newItemView.advancedNewView.textBlue.delegate = self
+        newItemView.advancedNewView.textGreen.delegate = self
+        newItemView.advancedNewView.textAlpha.delegate = self
+        newItemView.advancedNewView.textFont.delegate = self
+        newItemView.advancedNewView.textText.delegate = self
+        newItemView.advancedNewView.textSize.delegate = self
+        newItemView.advancedNewView.otherRed.delegate = self
+        newItemView.advancedNewView.otherBlue.delegate = self
+        newItemView.advancedNewView.otherGreen.delegate = self
+        newItemView.advancedNewView.otherAlpha.delegate = self
         newItemView.shareButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(NewItemController.shareTapped)))
+        newItemView.advancedButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(NewItemController.advancedTapped)))
+        newItemView.advancedNewView.doneButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(NewItemController.advancedDoneTapped)))
+    }
+    
+    func advancedTapped() {
+        newItemView.advancedNewView.isHidden = false
+    }
+    
+    func advancedDoneTapped() {
+        newItemView.advancedNewView.isHidden = true
     }
     
     func shareTapped() {
@@ -56,6 +78,63 @@ class NewItemController: UIViewController, UITextFieldDelegate, UIImagePickerCon
         let newView = UIImageView()
         newView.isUserInteractionEnabled = true
         let newElement = UXElement(name: newItemView.nameTextField.text!, className: newItemView.classTextField.text!, view: newView)
+        if newItemView.advancedNewView.textRed.text != "" {
+            let t1 = NSMutableString()
+            t1.append(newElement.name)
+            t1.append(".textColor = UIColor(red: ")
+            t1.append(newItemView.advancedNewView.textRed.text!)
+            t1.append(" / 255.0, green: ")
+            t1.append(newItemView.advancedNewView.textGreen.text!)
+            t1.append(" / 255.0, blue: ")
+            t1.append(newItemView.advancedNewView.textBlue.text!)
+            t1.append(" / 255.0, alpha: ")
+            t1.append(newItemView.advancedNewView.textAlpha.text!)
+            t1.append(" / 255.0)")
+            newElement.addInitializer(value: t1 as String)
+        }
+        if newItemView.advancedNewView.textFont.text != "" {
+            let t1 = NSMutableString()
+            t1.append(newElement.name)
+            t1.append(".font = UIFont(name: \"")
+            t1.append(newItemView.advancedNewView.textFont.text!)
+            t1.append(("\", size: "))
+            t1.append(newItemView.advancedNewView.textSize.text!)
+            t1.append(")")
+            newElement.addInitializer(value: t1 as String)
+        }
+        
+        if newItemView.advancedNewView.textText.text != "" {
+            let t1 = NSMutableString()
+            t1.append(newElement.name)
+            t1.append(".text = \"")
+            t1.append(newItemView.advancedNewView.textText.text!)
+            t1.append("\"")
+            newElement.addInitializer(value: t1 as String)
+        }
+        
+        if newItemView.advancedNewView.otherRed.text != "" {
+            let t1 = NSMutableString()
+            t1.append(newElement.name)
+            t1.append(".backgroundColor = UIColor(red: ")
+            t1.append(newItemView.advancedNewView.otherRed.text!)
+            t1.append(" / 255.0, green: ")
+            t1.append(newItemView.advancedNewView.otherGreen.text!)
+            t1.append(" / 255.0, blue: ")
+            t1.append(newItemView.advancedNewView.otherBlue.text!)
+            t1.append(" / 255.0, alpha: ")
+            t1.append(newItemView.advancedNewView.otherAlpha.text!)
+            t1.append(" / 255.0)")
+            newElement.addInitializer(value: t1 as String)
+        }
+        
+        if newItemView.advancedNewView.cornerRadius.text != "" {
+            let t1 = NSMutableString()
+            t1.append(newElement.name)
+            t1.append(".layer.cornerRadius = ")
+            t1.append(newItemView.advancedNewView.cornerRadius.text!)
+            newElement.addInitializer(value: t1 as String)
+        }
+        
         canvasController!.elementContainer.add(element: newElement)
         canvasController!.view.addSubview(newView)
         newView.frame = CGRect(x: 10, y: 10, width: canvasController!.view.frame.width * CGFloat(Double(newItemView.widthField.text!)! / 100.0), height: canvasController!.view.frame.height * CGFloat(Double(newItemView.heightField.text!)! / 100.0))
@@ -73,6 +152,18 @@ class NewItemController: UIViewController, UITextFieldDelegate, UIImagePickerCon
         newItemView.heightField.text = nil
         newItemView.widthField.text = nil
         newItemView.nameTextField.text = nil
+        newItemView.advancedNewView.textText.text = nil
+        newItemView.advancedNewView.textRed.text = nil
+        newItemView.advancedNewView.textBlue.text = nil
+        newItemView.advancedNewView.textGreen.text = nil
+        newItemView.advancedNewView.textAlpha.text = nil
+        newItemView.advancedNewView.textFont.text = nil
+        newItemView.advancedNewView.textSize.text = nil
+        newItemView.advancedNewView.otherRed.text = nil
+        newItemView.advancedNewView.otherBlue.text = nil
+        newItemView.advancedNewView.otherGreen.text = nil
+        newItemView.advancedNewView.otherAlpha.text = nil
+        newItemView.advancedNewView.cornerRadius.text = nil
         _ = self.navigationController?.popViewController(animated: true)
     }
     
