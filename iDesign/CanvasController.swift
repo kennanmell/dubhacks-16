@@ -14,7 +14,7 @@ class CanvasController: UIViewController {
     
     var elementContainer: ElementContainer!
     var newItemController: NewItemController!
-    var mapping = Dictionary<UIImageView, UXElement>()
+    var mapping = Dictionary<UIView, UXElement>()
 
     var canvasView: CanvasView {
         return self.view as! CanvasView

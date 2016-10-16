@@ -75,7 +75,12 @@ class NewItemController: UIViewController, UITextFieldDelegate, UIImagePickerCon
     }
     
     func createClicked() {
-        let newView = UIImageView()
+        let newView: UIView
+        if imagePicked == nil {
+            newView = UILabel()
+        } else {
+           newView = UIImageView()
+        }
         newView.isUserInteractionEnabled = true
         let newElement = UXElement(name: newItemView.nameTextField.text!, className: newItemView.classTextField.text!, view: newView)
         if newItemView.advancedNewView.textRed.text != "" {
@@ -91,6 +96,10 @@ class NewItemController: UIViewController, UITextFieldDelegate, UIImagePickerCon
             t1.append(newItemView.advancedNewView.textAlpha.text!)
             t1.append(" / 255.0)")
             newElement.addInitializer(value: t1 as String)
+            
+            if newView.isKind(of: UILabel.self) {
+                (newView as! UILabel).textColor = UIColor(red: CGFloat(Double(newItemView.advancedNewView.textRed.text!)!) / 255.0, green: CGFloat(Double(newItemView.advancedNewView.textGreen.text!)!) / 255.0, blue: CGFloat(Double(newItemView.advancedNewView.textBlue.text!)!) / 255.0, alpha: CGFloat(Double(newItemView.advancedNewView.textAlpha.text!)! / 255.0))
+            }
         }
         if newItemView.advancedNewView.textFont.text != "" {
             let t1 = NSMutableString()
@@ -101,6 +110,10 @@ class NewItemController: UIViewController, UITextFieldDelegate, UIImagePickerCon
             t1.append(newItemView.advancedNewView.textSize.text!)
             t1.append(")")
             newElement.addInitializer(value: t1 as String)
+            
+            if newView.isKind(of: UILabel.self) {
+                (newView as! UILabel).font = UIFont(name: newItemView.advancedNewView.textFont.text!, size: CGFloat(Double(newItemView.advancedNewView.textSize.text!)!))
+            }
         }
         
         if newItemView.advancedNewView.textText.text != "" {
@@ -110,8 +123,18 @@ class NewItemController: UIViewController, UITextFieldDelegate, UIImagePickerCon
             t1.append(newItemView.advancedNewView.textText.text!)
             t1.append("\"")
             newElement.addInitializer(value: t1 as String)
+            if newView.isKind(of: UILabel.self) {
+                (newView as! UILabel).text = newItemView.advancedNewView.textText.text
+            }
         }
         
+        if imagePicked == nil {
+            newView.backgroundColor = UIColor(red: 100.0 / 255.0, green: 100.0 / 255.0, blue: 100.0 / 255.0, alpha: 1.0)
+        } else {
+            (newView as! UIImageView).image = imagePicked
+            imagePicked = nil
+        }
+
         if newItemView.advancedNewView.otherRed.text != "" {
             let t1 = NSMutableString()
             t1.append(newElement.name)
@@ -125,6 +148,8 @@ class NewItemController: UIViewController, UITextFieldDelegate, UIImagePickerCon
             t1.append(newItemView.advancedNewView.otherAlpha.text!)
             t1.append(" / 255.0)")
             newElement.addInitializer(value: t1 as String)
+            
+            newView.backgroundColor = UIColor(red: CGFloat(Double(newItemView.advancedNewView.otherRed.text!)!) / 255.0, green: CGFloat(Double(newItemView.advancedNewView.otherGreen.text!)!) / 255.0, blue: CGFloat(Double(newItemView.advancedNewView.otherBlue.text!)!) / 255.0, alpha: CGFloat(Double(newItemView.advancedNewView.otherAlpha.text!)! / 255.0))
         }
         
         if newItemView.advancedNewView.cornerRadius.text != "" {
@@ -133,17 +158,13 @@ class NewItemController: UIViewController, UITextFieldDelegate, UIImagePickerCon
             t1.append(".layer.cornerRadius = ")
             t1.append(newItemView.advancedNewView.cornerRadius.text!)
             newElement.addInitializer(value: t1 as String)
+            
+            newView.layer.cornerRadius = CGFloat(Double(newItemView.advancedNewView.cornerRadius.text!)!)
         }
         
         canvasController!.elementContainer.add(element: newElement)
         canvasController!.view.addSubview(newView)
         newView.frame = CGRect(x: 10, y: 10, width: canvasController!.view.frame.width * CGFloat(Double(newItemView.widthField.text!)! / 100.0), height: canvasController!.view.frame.height * CGFloat(Double(newItemView.heightField.text!)! / 100.0))
-        if imagePicked == nil {
-            newView.backgroundColor = UIColor(red: 100.0 / 255.0, green: 100.0 / 255.0, blue: 100.0 / 255.0, alpha: 1.0)
-        } else {
-            newView.image = imagePicked
-            imagePicked = nil
-        }
         canvasController!.mapping[newView] = newElement
         canvasController!.view.addSubview(newView)
         canvasController!.addPan(view: newView)
